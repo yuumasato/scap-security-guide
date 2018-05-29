@@ -6,11 +6,10 @@
         <platform>Red Hat Enterprise Linux 7</platform>
         <platform>multi_platform_fedora</platform>
       </affected>
-      <description>The grub.cfg file should be owned by the root group. By default, this file is located at /boot/grub2/grub.cfg or, for EFI systems, at /boot/efi/EFI/redhat/grub.cfg</description>
+      <description>File /boot/grub2/grub.cfg should be owned by the root group.</description>
     </metadata>
     <criteria operator="OR">
       <criterion test_ref="test_file_group_owner_grub2_cfg" />
-      <extend_definition definition_ref="file_group_owner_efi_grub2_cfg" />
     </criteria>
   </definition>
 

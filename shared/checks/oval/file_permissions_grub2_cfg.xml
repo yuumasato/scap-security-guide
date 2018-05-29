@@ -6,11 +6,10 @@
         <platform>Red Hat Enterprise Linux 7</platform>
         <platform>multi_platform_fedora</platform>
       </affected>
-      <description>File permissions for grub.cfg should be set to 0600 (or stronger). By default, this file is located at /boot/grub2/grub.cfg or, for EFI systems, at /boot/efi/EFI/redhat/grub.cfg</description>
+      <description>File permissions for /boot/grub2/grub.cfg should be set to 0600 (or stronger).</description>
     </metadata>
     <criteria operator="OR">
       <criterion test_ref="test_file_permissions_grub2_cfg" />
-      <extend_definition definition_ref="file_permissions_efi_grub2_cfg" />
     </criteria>
   </definition>
 
