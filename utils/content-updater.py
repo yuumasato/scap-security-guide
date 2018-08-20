@@ -7,9 +7,9 @@ import ssg.build_yaml
 import ssg.rules
 import ssg.rule_dir_stats as rds
 
+# query can have form of: products.contains:rhel7
+# query can have form of: ovals.products.contains:rhel7
 def apply_query(rule_obj, query):
-    # query has form of: products.contains:rhel7
-    # query has form of: oval.products.is:rhel7
     full_query_field, query_value = query.split(':')
     try:
         language, field, comparator = full_query_field.split('.')
@@ -43,15 +43,8 @@ def apply_query(rule_obj, query):
 
 def update_contents(rule_obj, remove_exp, add_exp):
     if remove_exp:
-        full_remove_field, remove_value = remove_exp.split(':')
-
-        try:
-            language, field, comparator = full_remove_field.split('.')
-            field_value = rule_obj[language][field]
-        except ValueError:
-            field, comparator = full_remove_field.split('.')
-            field_value = rule_obj[field]
-
+        # TODO
+        pass
 
     if add_exp:
         full_add_field, value_to_add = add_exp.split(':')
@@ -66,7 +59,7 @@ def update_contents(rule_obj, remove_exp, add_exp):
         if isinstance(field_value, list):
             if value_to_add not in field_value:
                 field_value.append(value_to_add)
-            
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -92,16 +85,16 @@ def main():
             if (args.remove or args.add):
                 update_contents(known_rules[rule_id], args.remove, args.add)
 
+                # Reflect changes on filesystem
                 rule_file = ssg.rules.get_rule_dir_yaml(known_rules[rule_id]['dir'])
-                print(rule_file)
                 rule_yaml = ssg.build_yaml.Rule.from_yaml(rule_file)
-                print(rule_yaml)
+                # Update Rule
+                # Write to file
 
                 #print(rule_id +": "+ str(known_rules[rule_id]["products"]))
             else:
-                # Just print the rule
-                #print(rule_id +": "+ str(known_rules[rule_id]["products"]))
-                pass
+                # Nothing to change, just print rules that matched query
+                print(rule_id +": "+ str(known_rules[rule_id]["products"]))
 
     # regenerate rule_dirs.json
 
