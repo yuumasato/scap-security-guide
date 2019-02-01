@@ -59,7 +59,7 @@ def main():
         data.variant = "centos7"
         data.url = "http://mirror.centos.org/centos/7/os/x86_64"
 
-    command = 'virt-install -n {domain} -r {ram} --vcpus={cpu} --os-variant={variant} --accelerate --disk path={disk_path},size=12 -x "inst.ks={kickstart}" --location {url}'.format(**data.__dict__)
+    command = 'virt-install -n {domain} -r {ram} --vcpus={cpu} --os-variant={variant} --accelerate --disk path={disk_path},size=7 -x "inst.ks={kickstart}" --location {url}'.format(**data.__dict__)
     if data.dry:
         print(command)
     else:

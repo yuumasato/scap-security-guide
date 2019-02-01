@@ -155,7 +155,7 @@ def move_rule_other(ssg_root, current_product, path, obj_name):
 
     assert not os.path.exists(new_rule_dir)
 
-    sub_dirs = ['oval', 'bash', 'ansible', 'anaconda', 'puppet']
+    sub_dirs = ['oval', 'bash', 'ansible', 'anaconda', 'puppet', 'tests']
     new_rule_subdirs = [abs_join(new_rule_dir, j) for j in sub_dirs]
 
     move_templates = [
@@ -182,6 +182,12 @@ def move_rule_other(ssg_root, current_product, path, obj_name):
             'source_name': "%s.anaconda",
             'dest_dir': new_rule_subdirs[3],
             'dest_name': "%s.anaconda"
+        },
+        {
+            'source_dir': "%s/fixes/puppet",
+            'source_name': "%s.pp",
+            'dest_dir': new_rule_subdirs[4],
+            'dest_name': "%s.pp"
         },
         {
             'source_dir': "%s/fixes/puppet",
