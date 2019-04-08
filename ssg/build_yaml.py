@@ -299,6 +299,8 @@ class Benchmark(object):
 
         self.add_value(conditional_clause)
 
+        # load platform-specification here
+
     @staticmethod
     def from_yaml(yaml_file, id_, product_yaml=None):
         yaml_contents = open_and_macro_expand(yaml_file, product_yaml)
@@ -368,6 +370,12 @@ class Benchmark(object):
         else:
             tree = ET.parse(file_)
             self.bash_remediation_fns_group = tree.getroot()
+
+    def add_platform_specifications(self, root):
+        platform_specification = ET.SubElement(root, 'platform-specification')
+        platform_specification.set('xmlns','http://cpe.mitre.org/language/2.0')
+        for platform in self.platform_specifications:
+            platform.translate() # TODO translate
 
     def to_xml_element(self):
         root = ET.Element('Benchmark')
@@ -440,6 +448,14 @@ class Benchmark(object):
 
     def __str__(self):
         return self.id_
+
+
+class PlatformApplicability(object):
+    """Represents a CPE Applicability Language platform
+    """
+
+    def __init__(self, platform):
+        self.platform = platform
 
 
 class Group(object):
@@ -760,6 +776,7 @@ class Rule(object):
         if self.platform:
             platform_el = ET.SubElement(rule, "platform")
             try:
+                # Workaround translation, so that we don't need to change all references
                 platform_cpe = XCCDF_PLATFORM_TO_CPE[self.platform]
             except KeyError:
                 raise ValueError("Unsupported platform '%s' in rule '%s'." % (self.platform, self.id_))
