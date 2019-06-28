@@ -138,8 +138,8 @@ def parse_args():
                              help="Regular expression matching test scenarios to run")
 
     parser_combined = subparsers.add_parser("combined",
-                                            help=("Tests all rules in a profile evaluating them "
-                                                  "against their test scenarios."),
+                                            help=("Testing checks and remediations of rules from a"
+                                                  " particular profile for various situations."),
                                             parents=[common_parser])
     parser_combined.set_defaults(func=ssg_test_suite.combined.perform_combined_check)
     parser_combined.add_argument("--dontclean",
