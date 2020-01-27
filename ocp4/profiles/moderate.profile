@@ -132,14 +132,14 @@ selections:
 
     ### Kernel Config
     ## Boot prompt
-    - grub2_audit_argument
-    - grub2_audit_backlog_limit_argument
-    - grub2_slub_debug_argument
-    - grub2_page_poison_argument
-    - grub2_vsyscall_argument
-    - grub2_vsyscall_argument.role=unscored
-    - grub2_vsyscall_argument.severity=info
-    - grub2_pti_argument
+    #- grub2_audit_argument
+    #- grub2_audit_backlog_limit_argument
+    #- grub2_slub_debug_argument
+    #- grub2_page_poison_argument
+    #- grub2_vsyscall_argument
+    #- grub2_vsyscall_argument.role=unscored
+    #- grub2_vsyscall_argument.severity=info
+    #- grub2_pti_argument
 
     ## Security Settings
     - sysctl_kernel_kptr_restrict
@@ -320,8 +320,8 @@ selections:
     ## Disable Unauthenticated Login (such as Guest Accounts)
     ## FIA_AFL.1
     - require_singleuser_auth
-    - grub2_disable_interactive_boot
-    - grub2_uefi_password
+    #- grub2_disable_interactive_boot
+    #- grub2_uefi_password
     - no_empty_passwords
 
     ## Set Maximum Number of Authentication Failures to 3 Within 15 Minutes
@@ -529,7 +529,7 @@ selections:
     - wireless_disable_interfaces
 
     # AC-19
-    - grub2_nousb_argument
+    #- grub2_nousb_argument
     - bios_disable_usb_boot
     - service_autofs_disabled
     #- mount_option_nosuid_removable_partitions
@@ -540,7 +540,7 @@ selections:
     - sshd_limit_user_access
     - sshd_disable_rhosts
     #- xwindows_runlevel_target
-    - grub2_enable_selinux
+    #- grub2_enable_selinux
     #- require_emergency_target_auth
     - no_netrc_files
 
