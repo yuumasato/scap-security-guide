@@ -49,7 +49,7 @@ ocil_clause: 'ExecShield is not supported by the hardware, is not enabled, or ha
 ocil: |-
     To verify ExecShield is enabled on 64-bit Red Hat Enterprise Linux 7 systems,
     run the following command:
-    <pre>$ dmesg | grep '[NX|DX]*protection'</pre>
+    <pre>$ dmesg | grep '[NX|XD]*protection'</pre>
     The output should not contain <tt>'disabled by kernel command line option'</tt>.
     To verify that ExecShield has not been disabled in the kernel configuration,
     run the following command:
