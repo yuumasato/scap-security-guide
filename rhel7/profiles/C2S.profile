@@ -70,6 +70,8 @@ selections:
     - partition_for_var_log
 
     # 1.1.12 Ensure separate partition exists for /var/log/audit (Scored)
+    - partition_for_var_log_audit
+
     # 1.1.13 Ensure separate partition exists for /home (Scored)
     - partition_for_home
 
@@ -730,9 +732,6 @@ selections:
     # 6.2.17 Ensure no duplicate GIDs exist (Scored)
     # 6.2.18 Ensure no duplicate user names exist (Scored)
     # 6.2.19 Ensure no duplicate group names exist (Scored)
-
-
-    - partition_for_var_log_audit
 
     # Necessary for dconf
     - dconf_db_up_to_date
