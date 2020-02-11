@@ -102,7 +102,6 @@ selections:
     # 1.1.22 Disable Automounting (Scored)
     - service_autofs_disabled
 
-    # 1.2 Configure Software Updates
     # 1.2.1 Ensure package manager repositories are configured (Not Scored)
     # 1.2.2 Ensure gpgcheck is globally activated (Scored)
     - ensure_gpgcheck_globally_activated
@@ -122,7 +121,6 @@ selections:
     # 1.3.2 Ensure filesystem integrity is regularly checked (Scored)
     - aide_periodic_cron_checking
 
-    # 1.4 Secure Boot Settings
     # 1.4.1 Ensure permissions on bootloader config are configured (Scored)
     - file_owner_grub2_cfg
     - file_groupowner_grub2_cfg
@@ -135,7 +133,6 @@ selections:
     # 1.4.3 Ensure authentication required for single user mode (Scored)
     - require_singleuser_auth
 
-    # 1.5 Additional Process Hardening
     # 1.5.1 Ensure core dumps are restricted (Scored)
     - disable_users_coredumps
     - sysctl_fs_suid_dumpable
@@ -151,7 +148,6 @@ selections:
     # 1.5.4 Ensure prelink is disabled (Scored)
     - disable_prelink
 
-    # 1.6 Mandatory Access Control
     # 1.6.1.1 Ensure SELinux is not disabled in bootloader configuration (Scored)
     - grub2_enable_selinux
 
@@ -174,7 +170,6 @@ selections:
 
     # 1.6.2 Ensure SELinux is installed (Scored)
 
-    # 1.7 Warning Banners
     # 1.7.1.1 Ensure message of the day is configured properly (Scored)
     - banner_etc_motd
 
@@ -195,9 +190,6 @@ selections:
     # 1.8 Ensure updates, patches, and additional security software are installed (Scored)
     - security_patches_up_to_date
  
-    # 2 Services
-    # 2.1 inetd Services
-
     # 2.1.1 Ensure chargen services are not enabled (Scored)
     # 2.1.2 Ensure daytime services are not enabled (Scored)
     # 2.1.3 Ensure discard services are not enabled (Scored)
@@ -208,7 +200,6 @@ selections:
     # 2.1.7 Ensure xinetd is not enabled (Scored)
     - service_xinetd_disabled
 
-    # 2.2 Special Purpose Services
     # 2.2.1.1 Ensure time synchronization is in use (Not Scored)
     - service_chronyd_or_ntpd_enabled
 
@@ -280,7 +271,6 @@ selections:
 
     # 2.2.21 Ensure rsync service is not enabled (Scored)
 
-    # 2.3 Service Clients
     # 2.3.1 Ensure NIS Client is not installed (Scored)
     - package_ypbind_removed
 
@@ -295,8 +285,6 @@ selections:
 
     # 2.3.5 Ensure LDAP client is not installed (Scored)
 
-    # 3 Network Configuration
-    # 3.1 Network Parameters (Host Only)
     # 3.1.1 Ensure IP forwarding is disabled (Scored)
     - sysctl_net_ipv4_ip_forward
 
@@ -304,7 +292,6 @@ selections:
     - sysctl_net_ipv4_conf_all_send_redirects
     - sysctl_net_ipv4_conf_default_send_redirects
 
-    # 3.2 Network Parameters (Host and Router)
     # 3.2.1 Ensure source routed packets are not accepted (Scored)
     - sysctl_net_ipv4_conf_all_accept_source_route
     - sysctl_net_ipv4_conf_default_accept_source_route
@@ -334,7 +321,6 @@ selections:
     # 3.2.8 Ensure TCP SYN Cookies is enabled (Scored)
     - sysctl_net_ipv4_tcp_syncookies
 
-    # 3.3 IPv6
     # 3.3.1 Ensure IPv6 router advertisements are not accepted (Not Scored)
     - sysctl_net_ipv6_conf_all_accept_ra
     - sysctl_net_ipv6_conf_default_accept_ra
@@ -346,7 +332,6 @@ selections:
     # 3.3.3 Ensure IPv6 is disabled (Not Scored)
     - sysctl_net_ipv6_conf_all_disable_ipv6
 
-    # 3.4 TCP Wrappers
     # 3.4.1 Ensure TCP Wrappers is installed (Scored)
     - package_tcp_wrappers_installed
 
@@ -355,7 +340,6 @@ selections:
     # 3.4.4 Ensure permissions on /etc/hosts.allow are configured (Scored)
     # 3.4.5 Ensure permissions on /etc/hosts.deny are configured (Scored)
 
-    # 3.5 Uncommon Network Protocols
     # 3.5.1 Ensure DCCP is disabled (Not Scored)
     - kernel_module_dccp_disabled
 
@@ -367,7 +351,6 @@ selections:
     # 3.5.4 Ensure TIPC is disabled (Not Scored)
     - kernel_module_tipc_disabled
 
-    # 3.6 Firewall Configuration
     # 3.6.1 Ensure iptables is installed (Scored)
     - package_iptables_installed
 
@@ -381,8 +364,6 @@ selections:
     # 3.6.5 Ensure firewall rules exist for all open ports (Scored)
     # 3.7 Ensure wireless interfaces are disabled (Not Scored)
 
-    # 4 Logging and Auditing
-    # 4.1 Configure System Accounting (auditd)
     # 4.1.1.1 Ensure audit log storage size is configured (Not Scored)
     - var_auditd_max_log_file=6
     - auditd_data_retention_max_log_file
@@ -479,7 +460,6 @@ selections:
     # 4.1.18 Ensure the audit configuration is immutable (Scored)
     - audit_rules_immutable
 
-    # 4.2 Configure Logging
     # 4.2.1.1 Ensure rsyslog Service is enabled (Scored)
     - package_rsyslog_installed
     - service_rsyslog_enabled
@@ -512,8 +492,6 @@ selections:
     # 4.3 Ensure logrotate is configured (Not Scored)
     - ensure_logrotate_activated
 
-    # 5 Access, Authentication and Authorization
-    # 5.1 Configure cron
     # 5.1.1 Ensure cron daemon is enabled (Scored)
     - service_crond_enabled
 
@@ -549,7 +527,6 @@ selections:
 
     # 5.1.8 Ensure at/cron is restricted to authorized users (Scored)
 
-    # 5.2 SSH Server Configuration
     # 5.2.1 Ensure permissions on /etc/ssh/sshd_config are configured (Scored)
     - file_groupowner_sshd_config
     - file_owner_sshd_config
@@ -598,7 +575,6 @@ selections:
     # 5.2.15 Ensure SSH warning banner is configured (Scored)
     - sshd_enable_warning_banner
 
-    # 5.3 Configure PAM
     # 5.3.1 Ensure password creation requirements are configured (Scored)
     - accounts_password_pam_retry
     # looks like try_first_pass is not covered
@@ -627,7 +603,6 @@ selections:
     - set_password_hashing_algorithm_systemauth
     # TODO: password-auth is not covered
 
-    # 5.4 User Accounts and Environment
     # 5.4.1.1 Ensure password expiration is 365 days or less (Scored)
     - var_accounts_maximum_age_login_defs=90
     - accounts_maximum_age_login_defs
@@ -661,12 +636,10 @@ selections:
 
     # 5.6 Ensure access to the su command is restricted (Scored)
 
-    # 6 System Maintenance
-    # 6.1 System File Permissions
+    # 6.1.1 Audit system file permissions (Not Scored)
     - rpm_verify_permissions
     - rpm_verify_ownership
 
-    # 6.1.1 Audit system file permissions (Not Scored)
     # 6.1.2 Ensure permissions on /etc/passwd are configured (Scored)
     - file_owner_etc_passwd
     - file_groupowner_etc_passwd
@@ -707,7 +680,6 @@ selections:
     # 6.1.14 Audit SGID executables (Not Scored)
     - file_permissions_unauthorized_sgid
 
-    # 6.2 User and Group Settings
     # 6.2.1 Ensure password fields are not empty (Scored)
     # 6.2.2 Ensure no legacy "+" entries exist in /etc/passwd (Scored)
     # 6.2.3 Ensure no legacy "+" entries exist in /etc/shadow (Scored)
