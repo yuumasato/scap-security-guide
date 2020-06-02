@@ -25,8 +25,8 @@ selections:
 - disable_users_coredumps
 - ensure_gpgcheck_globally_activated
 - ensure_redhat_gpgkey_installed
-- grub2_audit_argument
-- grub2_audit_backlog_limit_argument
+- zipl_audit_argument
+- zipl_audit_backlog_limit_argument
 - kernel_module_dccp_disabled
 - kernel_module_rds_disabled
 - kernel_module_tipc_disabled
@@ -64,7 +64,7 @@ selections:
 - require_singleuser_auth
 - selinux_policytype
 - selinux_state
-- grub2_enable_selinux
+- zipl_enable_selinux
 - service_auditd_enabled
 - sshd_disable_empty_passwords
 - sshd_disable_root_login
