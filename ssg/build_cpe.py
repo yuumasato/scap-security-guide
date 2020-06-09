@@ -54,3 +54,28 @@ def extract_referred_nodes(tree_with_refs, tree_with_ids, attrname):
             elementlist.append(element)
 
     return elementlist
+
+def extract_referred_nodes_from_list(list_with_refs, tree_with_ids, attrname):
+    """
+    Return the elements in tree_with_ids which are referenced
+    from list_with_refs via the element attribute 'attrname'.
+
+    Note: This function performs the same task as extract_referred_nodes, the only difference
+    is in the input format. While the original function accepted two trees of nodes as input,
+    this function takes a list and a tree of nodes as input.
+    """
+
+    reflist = []
+    elementlist = []
+
+    for element in list_with_refs:
+        for element in element.getiterator():
+            value = element.get(attrname)
+            if value is not None:
+                reflist.append(value)
+
+    for element in tree_with_ids.getiterator():
+        if element.get("id") in reflist:
+            elementlist.append(element)
+
+    return elementlist

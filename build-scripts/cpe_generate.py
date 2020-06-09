@@ -85,8 +85,9 @@ def main():
         cpe_variables = ssg.build_cpe.extract_referred_nodes(objects, variables, "var_ref")
         local_variables = ssg.build_cpe.extract_referred_nodes(variables, variables, "id")
         if cpe_variables:
+            referenced_variables = ssg.build_cpe.extract_referred_nodes_from_list(cpe_variables, variables, "var_ref")
             variables.clear()
-            [variables.append(cpe_variable) for cpe_variable in cpe_variables]
+            [variables.append(cpe_variable) for cpe_variable in cpe_variables + referenced_variables]
         elif local_var_ref:
             for local_var in local_variables:
                 if local_var.get('id') == local_var_ref:
