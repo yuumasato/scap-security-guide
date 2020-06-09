@@ -82,7 +82,7 @@ def main():
 
     variables = ovaltree.find("./{%s}variables" % oval_ns)
     if variables is not None:
-        cpe_variables = ssg.build_cpe.extract_referred_nodes(tests, variables, "var_ref")
+        cpe_variables = ssg.build_cpe.extract_referred_nodes(objects, variables, "var_ref")
         local_variables = ssg.build_cpe.extract_referred_nodes(variables, variables, "id")
         if cpe_variables:
             variables.clear()
