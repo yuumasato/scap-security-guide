@@ -1,4 +1,4 @@
-documentation_complete: true
+documentation_complete: false
 
 title: 'VPP - Protection Profile for Virtualization v. 1.0 for Red Hat Enterprise Linux Hypervisor (RHELH)'
 

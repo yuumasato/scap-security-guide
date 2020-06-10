@@ -1,4 +1,4 @@
-documentation_complete: true
+documentation_complete: false
 
 title: 'PCI-DSS v3.2.1 Control Baseline for Red Hat Enterprise Linux 7'
 

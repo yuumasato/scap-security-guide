@@ -1,4 +1,4 @@
-documentation_complete: true
+documentation_complete: false
 
 title: 'Criminal Justice Information Services (CJIS) Security Policy'
 

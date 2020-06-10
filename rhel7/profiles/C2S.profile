@@ -1,4 +1,4 @@
-documentation_complete: true
+documentation_complete: false
 
 title: 'C2S for Red Hat Enterprise Linux 7'
 

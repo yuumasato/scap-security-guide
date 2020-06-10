@@ -1,4 +1,4 @@
-documentation_complete: true
+documentation_complete: false
 
 title: 'Australian Cyber Security Centre (ACSC) Essential Eight'
 
