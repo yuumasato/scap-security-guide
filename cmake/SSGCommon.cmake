@@ -273,7 +273,7 @@ macro(ssg_build_ansible_playbooks PRODUCT)
 endmacro()
 
 macro(ssg_build_remediations PRODUCT)
-    message(STATUS "Scanning for dependencies of ${PRODUCT} fixes (bash, ansible, puppet, anaconda, ignition and kubernetes)...")
+    message(STATUS "Scanning for dependencies of ${PRODUCT} fixes (bash, ansible, puppet, anaconda)...")
 
     _ssg_build_remediations_for_language(${PRODUCT} "${PRODUCT_REMEDIATION_LANGUAGES}")
 
@@ -675,7 +675,7 @@ macro(ssg_build_product PRODUCT)
     add_custom_target(${PRODUCT}-content)
 
     if(NOT DEFINED PRODUCT_REMEDIATION_LANGUAGES)
-        set(PRODUCT_REMEDIATION_LANGUAGES "bash;ansible;puppet;anaconda;ignition;kubernetes")
+        set(PRODUCT_REMEDIATION_LANGUAGES "")
     endif()
 
     ssg_build_shorthand_xml(${PRODUCT})

@@ -38,5 +38,3 @@ endif()
 if (SSG_SCIENTIFIC_LINUX_DERIVATIVES_ENABLED)
     ssg_build_derivative_product(${PRODUCT} "sl" "sl7")
 endif()
-
-set(PRODUCT_REMEDIATION_LANGUAGES "")
