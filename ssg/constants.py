@@ -500,6 +500,7 @@ XCCDF_PLATFORM_TO_CPE = {
     "sssd": "cpe:/a:sssd",
     "systemd": "cpe:/a:systemd",
     "yum": "cpe:/a:yum",
+    "zipl": "cpe:/a:zipl",
 }
 
 # _version_name_map = {
