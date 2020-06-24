@@ -130,6 +130,7 @@ class Profile(object):
         if selection_entries:
             profile._parse_selections(selection_entries)
         del yaml_contents["selections"]
+        policies = yaml_contents.pop("policies", None)
 
         if yaml_contents:
             raise RuntimeError("Unparsed YAML data in '%s'.\n\n%s"
