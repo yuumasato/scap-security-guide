@@ -334,6 +334,49 @@ class Profile(object):
         return profile
 
 
+class ResolvableProfile(Profile):
+    def __init__(self, * args, ** kwargs):
+        super(ResolvableProfile, self).__init__(* args, ** kwargs)
+        self.resolved = False
+
+    def resolve(self, all_profiles):
+        if self.resolved:
+            return
+
+        resolved_selections = set(self.selected)
+        if self.extends:
+            if self.extends not in all_profiles:
+                msg = (
+                    "Profile {name} extends profile {extended}, but"
+                    "only profiles {known_profiles} are available for resolution."
+                    .format(name=self.id_, extended=self.extends,
+                            profiles=list(all_profiles.keys())))
+                raise RuntimeError(msg)
+            extended_profile = all_profiles[self.extends]
+            extended_profile.resolve(all_profiles)
+
+            extended_selects = set(extended_profile.selected)
+            resolved_selections.update(extended_selects)
+
+            updated_variables = dict(extended_profile.variables)
+            updated_variables.update(self.variables)
+            self.variables = updated_variables
+
+            updated_refinements = dict(extended_profile.refine_rules)
+            updated_refinements.update(self.refine_rules)
+            self.refine_rules = updated_refinements
+
+        for uns in self.unselected:
+            resolved_selections.discard(uns)
+
+        self.unselected = []
+        self.extends = None
+
+        self.selected = sorted(resolved_selections)
+
+        self.resolved = True
+
+
 class Value(object):
     """Represents XCCDF Value
     """
