@@ -111,6 +111,7 @@ class Profile(object):
         self.unselected = []
         self.variables = dict()
         self.refine_rules = defaultdict(list)
+        self.policies = {}
 
     @classmethod
     def from_yaml(cls, yaml_file, env_yaml=None):
@@ -131,6 +132,8 @@ class Profile(object):
             profile._parse_selections(selection_entries)
         del yaml_contents["selections"]
         policies = yaml_contents.pop("policies", None)
+        if policies:
+            profile._parse_policies(policies)
 
         if yaml_contents:
             raise RuntimeError("Unparsed YAML data in '%s'.\n\n%s"
@@ -182,6 +185,17 @@ class Profile(object):
                 self.unselected.append(item[1:])
             else:
                 self.selected.append(item)
+
+    def _parse_policies(self, policies_yaml):
+        for item in policies_yaml:
+            id_ = required_key(item, "id")
+            controls = required_key(item, "controls")
+            if not isinstance(controls, list):
+                msg = ("Policy {id_} contains invalid controls list {controls}."
+                    .format(id_=id_, controls=str(controls))
+                    )
+                raise ValueError(msg)
+            self.policies[id_] = controls
 
     def to_xml_element(self):
         element = ET.Element('Profile')
