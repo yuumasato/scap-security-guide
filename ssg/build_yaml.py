@@ -326,96 +326,23 @@ class Profile(object):
         return profile
 
 
-class ProfileWithSeparatePolicies(Profile):
-    def __init__(self, * args, ** kwargs):
-        super(ProfileWithSeparatePolicies, self).__init__(* args, ** kwargs)
-        self.policies = {}
-
-    def read_yaml_contents(self, yaml_contents):
-        policies = yaml_contents.pop("policies", None)
-        if policies:
-            self._parse_policies(policies)
-        super(ProfileWithSeparatePolicies, self).read_yaml_contents(yaml_contents)
-
-    def _parse_policies(self, policies_yaml):
-        for item in policies_yaml:
-            id_ = required_key(item, "id")
-            controls = required_key(item, "controls")
-            if not isinstance(controls, list):
-                if controls != "all":
-                    msg = ("Policy {id_} contains invalid controls list {controls}."
-                        .format(id_=id_, controls=str(controls))
-                        )
-                    raise ValueError(msg)
-            self.policies[id_] = controls
-
-    def resolve_controls(self, controls_manager):
-        for policy_id, controls in self.policies.items():
-            to_expand = Control()
-
-            if isinstance(controls, list):
-                to_expand = self._controls_to_items(controls_manager, policy_id, controls)
-            elif controls == "all":
-                to_expand = self._policy_to_items(controls_manager, policy_id)
-            else:
-                msg = "Unknown policy content {content} in profile {profile_id}".format(content=controls, profile_id=self.id_)
-                raise ValueError(msg)
-
-            self.selected.extend(to_expand.rules)
-            for varname, value in to_expand.variables.items():
-                if varname not in self.variables:
-                    self.variables[varname] = value
-
-    def extend_by(self, extended_profile):
-        self.policies.update(extended_profile.policies)
-        super(ProfileWithSeparatePolicies, self).extend_by(extended_profile)
-
-
-class ProfileWithInlinePolicies(Profile):
-    def __init__(self, * args, ** kwargs):
-        super(ProfileWithInlinePolicies, self).__init__(* args, ** kwargs)
-        self.controls_by_policy = defaultdict(list)
-
-    def apply_selection(self, item):
-        if ":" in item:
-            policy_id, control_id = item.split(":", 1)
-            self.controls_by_policy[policy_id].append(control_id)
-        else:
-            super(ProfileWithInlinePolicies, self).apply_selection(item)
-
-    def resolve_controls(self, controls_manager):
-        for policy_id, controls in self.controls_by_policy.items():
-            if "all" in controls:
-                to_expand = self._policy_to_items(controls_manager, policy_id)
-            else:
-                to_expand = self._controls_to_items(controls_manager, policy_id, controls)
-
-            self.selected.extend(to_expand.rules)
-            for varname, value in to_expand.variables.items():
-                if varname not in self.variables:
-                    self.variables[varname] = value
-
-
 class ResolvableProfile(Profile):
     def __init__(self, * args, ** kwargs):
         super(ResolvableProfile, self).__init__(* args, ** kwargs)
         self.resolved = False
         self.resolved_selections = set()
 
-    def _control_to_items(self, controls_manager, policy_id, control_id):
-        return controls_manager.get_control(policy_id, control_id)
-
     def _controls_to_items(self, controls_manager, policy_id, control_id_list):
         items = Control()
         for control_id in control_id_list:
-            new_control = self._control_to_items(controls_manager, policy_id, control_id)
+            new_control = controls_manager.get_control(policy_id, control_id)
             items.rules.extend(new_control.rules)
             items.variables.update(new_control.variables)
         items.rules = list(set(items.rules))
         return items
 
     def _policy_to_items(self, controls_manager, policy_id):
-        control_id_list = controls_manager.get_all_controls(policy_id)
+        control_id_list = [c.id for c in controls_manager.get_all_controls(policy_id)]
         return self._controls_to_items(controls_manager, policy_id, control_id_list)
 
     def resolve_controls(self, controls_manager):
@@ -463,6 +390,76 @@ class ResolvableProfile(Profile):
         self.selected = sorted(self.resolved_selections)
 
         self.resolved = True
+
+
+class ProfileWithSeparatePolicies(ResolvableProfile):
+    def __init__(self, * args, ** kwargs):
+        super(ProfileWithSeparatePolicies, self).__init__(* args, ** kwargs)
+        self.policies = {}
+
+    def read_yaml_contents(self, yaml_contents):
+        policies = yaml_contents.pop("policies", None)
+        if policies:
+            self._parse_policies(policies)
+        super(ProfileWithSeparatePolicies, self).read_yaml_contents(yaml_contents)
+
+    def _parse_policies(self, policies_yaml):
+        for item in policies_yaml:
+            id_ = required_key(item, "id")
+            controls = required_key(item, "controls")
+            if not isinstance(controls, list):
+                if controls != "all":
+                    msg = ("Policy {id_} contains invalid controls list {controls}."
+                        .format(id_=id_, controls=str(controls))
+                        )
+                    raise ValueError(msg)
+            self.policies[id_] = controls
+
+    def resolve_controls(self, controls_manager):
+        for policy_id, controls in self.policies.items():
+            to_expand = Control()
+
+            if isinstance(controls, list):
+                to_expand = self._controls_to_items(controls_manager, policy_id, controls)
+            elif controls == "all":
+                to_expand = self._policy_to_items(controls_manager, policy_id)
+            else:
+                msg = "Unknown policy content {content} in profile {profile_id}".format(content=controls, profile_id=self.id_)
+                raise ValueError(msg)
+
+            self.selected.extend(to_expand.rules)
+            for varname, value in to_expand.variables.items():
+                if varname not in self.variables:
+                    self.variables[varname] = value
+
+    def extend_by(self, extended_profile):
+        self.policies.update(extended_profile.policies)
+        super(ProfileWithSeparatePolicies, self).extend_by(extended_profile)
+
+
+class ProfileWithInlinePolicies(ResolvableProfile):
+    def __init__(self, * args, ** kwargs):
+        super(ProfileWithInlinePolicies, self).__init__(* args, ** kwargs)
+        self.controls_by_policy = defaultdict(list)
+
+    def apply_selection(self, item):
+        if ":" in item:
+            policy_id, control_id = item.split(":", 1)
+            self.controls_by_policy[policy_id].append(control_id)
+        else:
+            super(ProfileWithInlinePolicies, self).apply_selection(item)
+
+    def resolve_controls(self, controls_manager):
+        for policy_id, controls in self.controls_by_policy.items():
+            if "all" in controls:
+                to_expand = self._policy_to_items(controls_manager, policy_id)
+            else:
+                to_expand = self._controls_to_items(controls_manager, policy_id, controls)
+
+            self.selected.extend(to_expand.rules)
+            for varname, value in to_expand.variables.items():
+                if varname not in self.variables:
+                    self.variables[varname] = value
 
 
 class Value(object):
