@@ -1,22 +1,28 @@
 import collections
 import logging
 import os
+from glob import glob
 
 import ssg.yaml
 import ssg.utils
+
 
 class Control():
     def __init__(self):
         self.id = None
         self.rules = []
         self.variables = {}
+        self.level = ""
+        self.notes = ""
 
     @classmethod
-    def from_control_dict(cls, control_dict):
+    def from_control_dict(cls, control_dict, default_level=""):
         control = cls()
         control.title = control_dict.get("title")
         control.description = control_dict.get("description")
+        control.level = control_dict.get("level", default_level)
         control.automated = control_dict.get("automated", False)
+        control.notes = control_dict.get("notes", "")
         selections = control_dict.get("rules", [])
         for item in selections:
             if "=" in item:
@@ -39,10 +45,16 @@ class Policy():
         self.env_yaml = env_yaml
         self.filepath = filepath
         self.controls = {}
-    
+        self.levels = []
+        self.level_value = {}
+
     def _parse_controls_tree(self, tree):
+        default_level = ""
+        if self.levels:
+            default_level = self.levels[0]
+
         for node in tree:
-            control = Control.from_control_dict(node)
+            control = Control.from_control_dict(node, default_level=default_level)
             if "controls" in node:
                 for sc in self._parse_controls_tree(node["controls"]):
                     yield sc
@@ -51,10 +63,14 @@ class Policy():
                     control.related_rules.extend(sc.related_rules)
             yield control
 
-    
     def load(self):
         yaml_contents = ssg.yaml.open_and_expand(self.filepath, self.env_yaml)
         self.id = ssg.utils.required_key(yaml_contents, "id")
+
+        self.levels = yaml_contents.get("levels", ["default"])
+        for i, level in enumerate(self.levels):
+            self.level_value[level] = i
+
         controls_tree = ssg.utils.required_key(yaml_contents, "controls")
         self.controls = {
             c.id: c for c in self._parse_controls_tree(controls_tree)}
@@ -79,7 +95,7 @@ class ControlsManager():
     def load(self):
         if not os.path.exists(self.controls_dir):
             return
-        for filename in os.listdir(self.controls_dir):
+        for filename in glob(os.path.join(self.controls_dir, "*.yml")):
             logging.info("Found file %s" % (filename))
             filepath = os.path.join(self.controls_dir, filename)
             policy = Policy(filepath, self.env_yaml)
@@ -95,10 +111,36 @@ class ControlsManager():
         control = policy.get_control(control_id)
         return control
 
-    def get_all_controls(self, policy_id):
+    def _get_policy(self, policy_id):
         try:
             policy = self.policies[policy_id]
         except KeyError:
             msg = "policy '%s' doesn't exist" % (policy_id)
             raise ValueError(msg)
+        return policy
+
+    def _get_policy_level_value(self, policy, level_id):
+        if not level_id:
+            return 0
+
+        if level_id not in policy.levels:
+            msg = (
+                "Control level {level_id} not compatible with policy {policy_id}"
+                .format(level_id=level_id, policy_id=policy_id)
+            )
+            raise ValueError(msg)
+        return policy.level_value[level_id]
+
+    def get_all_controls_of_level_at_least(self, policy_id, level_id=None):
+        policy = self._get_policy(policy_id)
+        level = self._get_policy_level_value(policy, level_id)
+
+        all_policy_controls = self.get_all_controls(policy_id)
+        eligible_controls = [
+                c for c in all_policy_controls
+                if policy.level_value[c.level] <= level]
+        return eligible_controls
+
+    def get_all_controls(self, policy_id):
+        policy = self._get_policy(policy_id)
         return policy.controls.values()
