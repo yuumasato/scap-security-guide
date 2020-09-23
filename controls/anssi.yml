@@ -19,23 +19,38 @@ controls:
       Those whose presence can not be justified should be disabled, removed or deleted.
     automated: partially  # The list of essential services is not objective.
     notes: >-
-      Use of obsolete or insecure services is not recommended.
-      The minimal install is a good starting point, but this doesn't provide any assurante over any packages installed later.
+      Performing a minimal install is a good starting point, but we cannot check this or provide
+      any assurance over any packages installed later.
+      While any service installed increases attack surface, network facing services are the most
+      likely to be used as attack vectors. So this control focuses on removing common network
+      services that should not be installed without justification.
+      If any of these services is required, the profile needs to be tailored.
     rules:
+    - package_bind_removed
+    - package_dovecot_removed
     - package_dhcp_removed
-    #- package_rsh_removed
-    #- package_rsh-server_removed
     - package_sendmail_removed
     - package_telnetd_removed
-    #- package_talk_removed
-    #- package_talk-server_removed
-    #- package_telnet_removed
-    #- package_telnet-server_removed
-    #- package_tftp_removed
-    #- package_tftp-server_removed
-    #- package_xinetd_removed
-    #- package_ypbind_removed
-    #- package_ypserv_removed
+    - package_httpd_removed
+    - package_net-snmp_removed
+    - package_nfs-utils_removed
+    - package_openldap-servers_removed
+    - package_rsh_removed
+    - package_rsh-server_removed
+    - package_samba_removed
+    - package_sendmail_removed
+    - package_squid_removed
+    - package_talk_removed
+    - package_talk-server_removed
+    - package_telnet_removed
+    - package_telnet-server_removed
+    - package_tftp_removed
+    - package_tftp-server_removed
+    - package_tuned_removed
+    - package_vsftpd_removed
+    - package_xinetd_removed
+    - package_ypbind_removed
+    - package_ypserv_removed
 
   - id: R2
     level: intermediary
