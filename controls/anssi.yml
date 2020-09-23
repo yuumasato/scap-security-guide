@@ -82,21 +82,36 @@ controls:
       barriers that must be kept independent of each other.
     automated: partially
     notes: >-
-      Defense in-depth can be broadly divded into three areas, physical, technical and
-      administrative. The security profile is best suitedto protect the technical area.
+      Defense in-depth can be broadly divided into three areas, physical, technical and
+      administrative. The security profile is best suited to protect the technical area.
       Among the barriers that can be implemented within the technical area are antivirus software,
       authentication, multi-factor authentication, encryption, logging, auditing, sandboxing,
       intrusion detection systems, firewalls, and vulnerability scanners.
     rules:
-    #- package_audit_installed
-    #- service_auditd_enabled
+    # auditing
+    - package_auditd_installed
+    - service_auditd_enabled
+    # authentication
     - sudo_remove_no_authenticate
+    - no_direct_root_logins
+    # logging
     - package_rsyslog_installed
     - service_rsyslog_enabled
-    #- package_ntp_installed
-    #- package_firewalld_installed
-    #- service_firewalld_enabled
-    #- sssd_enable_smartcards
+    # intrusion detection
+    - package_aide_installed
+    - aide_periodic_cron_checking
+    # firewall
+    - package_firewalld_installed
+    - service_firewalld_enabled
+    # multi-factor authentcation
+    - sssd_enable_smartcards
+    # Ensure time is synchronized
+    - package_chrony_installed
+    - service_chronyd_enabled
+    - chronyd_specify_remote_server
+    # MAC
+    - var_selinux_state=enforcing
+    - selinux_state
 
   - id: R6
     level: enhanced
