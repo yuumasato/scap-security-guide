@@ -86,6 +86,14 @@ controls:
     - service_firewalld_enabled
     - sssd_enable_smartcards
 
+  - id: R6
+    level: enhanced
+    title: Network services partionning
+
+  - id: R7
+    level: enhanced
+    title: Logging of service activity
+
   - id: R8
     level: minimal
     title: Regular updates
@@ -136,6 +144,17 @@ controls:
     - mount_option_var_tmp_nodev
     - mount_option_var_tmp_noexec
 
+  - id: R13
+    level: enhanced
+    title: Access Restrictions on the /boot directory
+    rules:
+    - file_permissions_systemmap
+
+  - id: R14
+    level: intermediary
+    title: Installation of packages reduced to the bare necessities
+    # rules: TBD
+
   - id: R15
     level: minimal
     title: Package repositories selection
@@ -145,10 +164,16 @@ controls:
     - ensure_gpgcheck_globally_activated
     - ensure_gpgcheck_local_packages
 
-  - id: R14
-    level: intermediary
-    title: Installation of packages reduced to the bare necessities
-    # rules: TBD
+  - id: R16
+    level: enhanced
+    title: Hardened package repositories
+
+  - id: R17
+    level: enhanced
+    title: Boot loader password
+    rules:
+    - grub2_password
+    - grub2_uefi_password
 
   - id: R18
     level: minimal
@@ -163,6 +188,10 @@ controls:
     # performed (for example sudo).
     - no_direct_root_logins
     - sshd_disable_root_login
+
+  - id: R20
+    level: enhanced
+    title: Installation of secret or trusted elements
 
   - id: R21
     level: intermediary
@@ -308,10 +337,36 @@ controls:
     # kernel.perf_event_max_sample_rate = 1
     # kernel.perf_cpu_time_max_percent = 1
 
+  - id: R24
+    level: enhanced
+    title: Disabling the loading of kernel modules
+
+  - id: R25
+    level: enhanced
+    title: Yama module sysctl configuration
+    rules:
+    - sysctl_kernel_yama_ptrace_scope
+
+  - id: R26
+    level: enhanced
+    title: Disabling unused user accounts
+
   - id: R27
     title: Disabling service accounts
     level: intermediary
     # rules: TBD
+
+  - id: R28
+    level: enhanced
+    title: Uniqueness and exclusivity of system service accounts
+
+  - id: R29
+    level: enhanced
+    title: User session timeout
+    rules:
+    - accounts_tmout
+    - sshd_set_idle_timeout
+    - sshd_idle_timeout_value=5_minutes
 
   - id: R30
     level: minimal
@@ -341,6 +396,14 @@ controls:
     level: intermediary
     # rules: TBD
 
+  - id: R35
+    level: enhanced
+    title: umaks value
+    rules:
+    - var_accounts_user_umask=077
+    - accounts_umask_etc_login_defs
+    - accounts_umask_etc_profile
+
   - id: R36
     title: Rights to access sensitive content files
     level: intermediary
@@ -356,6 +419,13 @@ controls:
     level: minimal
     title: Executables with setuid and/or setgid bits
     # rules: TBD
+
+  - id: R38
+    level: enhanced
+    title: Executable setuid root
+    rules:
+    - file_permissions_unauthorized_suid
+    - file_permissions_unauthorized_sgid
 
   - id: R39
     level: intermediary
@@ -411,6 +481,18 @@ controls:
     title: Messaging Aliases for Service Accounts
     # rules: TBD
 
+  - id: R50
+    level: enhanced
+    title: Logging activity by auditd
+
+  - id: R53
+    level: enhanced
+    title: Restricting access of deployed services
+
+  - id: R54
+    level: enhanced
+    title: Virtualization components hardening
+
   - id: R55
     level: intermediary
     title: chroot jail and access right for partitioned service
@@ -441,6 +523,10 @@ controls:
     level: intermediary
     title: Privileges of target sudo users
     # rules: TBD
+
+  - id: R61
+    level: enhanced
+    title: Limiting the number of commands requiring the use of EXEC option
 
   - id: R62
     level: intermediary
