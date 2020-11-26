@@ -417,7 +417,11 @@ controls:
   - id: R27
     title: Disabling service accounts
     level: intermediary
-    # rules: TBD
+    notes: The rules selected in this requirement lock the password and remove the shell of users
+      whose ID is smaller than UID_MIN.
+    rules:
+      - no_shelllogin_for_systemaccounts
+      - no_password_auth_for_systemaccounts
 
   - id: R28
     level: enhanced
