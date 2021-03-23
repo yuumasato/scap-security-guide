@@ -41,7 +41,7 @@ class HtmlOutput(object):
         for r_file in rule_files:
             rule = ssg.build_yaml.Rule.from_yaml(r_file, self.env_yaml)
             rule.relative_definition_location = (
-                pathlib.PurePath(rule.definition_location)
+                    pathlib.PurePath(rule.definition_location[:-9])
                 .relative_to(self.project_directory))
             rules_dict[rule.id_] = rule
         return rules_dict

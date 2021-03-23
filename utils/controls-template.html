@@ -19,14 +19,14 @@ based on <a href="{{{ policy.source }}}">{{{ policy.source }}}</a>
 <div class="one_control">
   <h2>{{{ control.id }}}: {{{ control.title }}}</h2>
   <p>Description: {{{ control.description | safe }}}</p>
-  <p>Level: {{{ control.level }}}</p>
+ <p>Level: {{{ control.level }}}</p>
   <p>Automated: {{{ control.automated }}}</p>
   {{% if control.rules -%}}
   Selections:
   <ul>
     {{%- for rule_id in control.rules -%}}
     {{%- if rule_id in rules %}}
-    <li><a href="https://github.com/ComplianceAsCode/content/tree/master/{{{ rules[rule_id].relative_definition_location }}}">{{{ rule_id }}}</a>: {{{ rules[rule_id].title }}}</li>
+    <li>{{{ rules[rule_id].title }}}: <a href="./ssg-rhel8-guide-anssi_bp28_high.html#xccdf_org.ssgproject.content_rule_{{{ rule_id }}}">Description</a> <a href="https://github.com/ComplianceAsCode/content/tree/master/{{{ rules[rule_id].relative_definition_location }}}">Source code ({{{ rule_id }}})</a></li>
     {{%- else %}}
     <li>{{{ rule_id }}} - not available for this product</li>
     {{%- endif -%}}

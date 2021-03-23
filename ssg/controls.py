@@ -24,7 +24,7 @@ class Control():
         control.id = ssg.utils.required_key(control_dict, "id")
         control.title = control_dict.get("title")
         control.description = control_dict.get("description")
-        control.automated = control_dict.get("automated", "yes")
+        control.automated = control_dict.get("automated", "no")
         if control.automated not in ["yes", "no", "partially"]:
             msg = (
                 "Invalid value '%s' of automated key in control "
