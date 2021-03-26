@@ -73,9 +73,16 @@ class ProductCPEs(object):
                 )
                 continue
 
+            applicabilities_list = open_raw(dir_item_path)
             # Get past "cpes" key, which was added for readability of the content
-            cpes_list = open_raw(dir_item_path)["cpes"]
+            cpes_list = applicabilities_list["cpes"]
             self._load_cpes_list(self.cpes_by_id, cpes_list)
+
+            compiled_platforms_list = applicabilities_list.get("compiled_platforms", [])
+            self._load_cpes_list(self.cpes_by_id, compiled_platforms_list)
+
+            #statements_list = applicabilities_list.get("applicability_statements")
+            #self._load_cpes_list(self.cpes_by_id, statements_list)
 
         # Add product_cpes to map of CPEs by ID
         self.cpes_by_id = merge_dicts(self.cpes_by_id, self.product_cpes)
