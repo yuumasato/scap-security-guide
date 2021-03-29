@@ -759,6 +759,10 @@ class Benchmark(object):
         add_sub_element(root, "front-matter", self.front_matter)
         add_sub_element(root, "rear-matter", self.rear_matter)
 
+        # Output cpe:platforms into a platform-specification
+        # How to know what platforms have been used?
+        used_platform_specifications = []
+
         # The Benchmark applicability is determined by the CPEs
         # defined in the product.yml
         for cpe_name in self.product_cpe_names:
@@ -1427,6 +1431,16 @@ class Rule(object):
         root = self.to_xml_element()
         tree = ET.ElementTree(root)
         tree.write(file_name)
+
+
+class CPEPlatform(object):
+    """Represents a cpe:platform
+    """
+
+    def __init__(self, id_):
+        self.id_ = id_
+        self.title = ""
+        self.logical_test = []
 
 
 class DirectoryLoader(object):

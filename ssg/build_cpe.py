@@ -39,6 +39,11 @@ class ProductCPEs(object):
             for cpe_id in cpe.keys():
                 map_[cpe_id] = CPEItem(cpe[cpe_id])
 
+    def _load_applicabilities(self, map_, cpes_list):
+        for cpe in cpes_list:
+            for cpe_id in cpe.keys():
+                map_[cpe_id] = CPEItem(cpe[cpe_id])
+
     def load_product_cpes(self):
 
         try:
@@ -77,7 +82,7 @@ class ProductCPEs(object):
 
             # applicability_platforms will also be extended by auto-generated platforms
             compiled_platforms_list = applicabilities_list.get("applicability_platforms", [])
-            self._load_cpes_list(self.cpes_by_id, compiled_platforms_list)
+            self._load_applicabilities(self.cpes_by_id, compiled_platforms_list)
 
         # Add product_cpes to map of CPEs by ID
         self.cpes_by_id = merge_dicts(self.cpes_by_id, self.product_cpes)

@@ -90,3 +90,7 @@ applicability_platforms:
       name: "cpe:/a:openssh-server_and_openssh_74_or_higher"
       title: "OpenSSH is installed and its version is 7.4+"
       check_id: installed_env_has_openssh-server_package # mock OVAL for the build system
+      logical-test:
+        - and:
+          - openssh-server
+          - sshd_version_equal_or_higher_than_74
