@@ -59,6 +59,11 @@ cpes:
       title: "SSSD is configured to use LDAP"
       check_id: sssd_conf_uses_ldap
 
+  - openssh-server:
+      name: "cpe:/a:openssh-server"
+      title: "Package OpenSSH-server is installed"
+      check_id: installed_env_has_openssh-server_package
+
   - sudo:
       name: "cpe:/a:sudo"
       title: "Package sudo is installed"
@@ -78,3 +83,10 @@ cpes:
       name: "cpe:/a:zypper"
       title: "Package zypper is installed"
       check_id: installed_env_has_zypper_package
+
+
+applicability_platforms:
+  - openssh-server_and_openssh_74_or_higher:
+      name: "cpe:/a:openssh-server_and_openssh_74_or_higher"
+      title: "OpenSSH is installed and its version is 7.4+"
+      check_id: installed_env_has_openssh-server_package # mock OVAL for the build system

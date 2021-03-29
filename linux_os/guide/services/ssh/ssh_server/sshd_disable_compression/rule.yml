@@ -44,6 +44,10 @@ references:
     cis-csc: 11,3,9
     stigid@rhel8: RHEL-08-010510
 
+platforms:
+    # combination of openssh-server CPE platform and openssh_74_or_higher applicability statement
+    - openssh-server_and_openssh_74_or_higher
+
 ocil_clause: 'it is commented out, or is not set to no or delayed'
 
 ocil: |-
