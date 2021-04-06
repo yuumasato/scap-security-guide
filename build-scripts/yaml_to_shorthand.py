@@ -74,6 +74,9 @@ def main():
         p.validate_rules(loader.all_rules, loader.all_groups)
         p.validate_refine_rules(loader.all_rules)
 
+    print("CPE names:")
+    print(loader.all_cpe_names)
+
     loader.export_group_to_file(args.output)
 
 

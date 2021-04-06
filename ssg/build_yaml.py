@@ -651,7 +651,8 @@ class Benchmark(object):
         self.bash_remediation_fns_group = None
         self.groups = {}
         self.rules = {}
-        self.product_cpe_names = []
+        self.cpe_names = set()
+        self.all_cpe_names = set()
 
         # This is required for OCIL clauses
         conditional_clause = Value("conditional_clause")
@@ -694,7 +695,7 @@ class Benchmark(object):
         del yaml_contents["version"]
 
         if env_yaml:
-            benchmark.product_cpe_names = env_yaml["product_cpes"].get_product_cpe_names()
+            benchmark.cpe_names = env_yaml["product_cpes"].get_product_cpe_names()
 
         if yaml_contents:
             raise RuntimeError("Unparsed YAML data in '%s'.\n\n%s"
@@ -729,6 +730,7 @@ class Benchmark(object):
                 continue
 
             self.profiles.append(new_profile)
+            self.all_cpe_names.update(new_profile.cpe_names)
 
     def add_bash_remediation_fns_from_file(self, file_):
         if not file_:
@@ -765,7 +767,7 @@ class Benchmark(object):
 
         # The Benchmark applicability is determined by the CPEs
         # defined in the product.yml
-        for cpe_name in self.product_cpe_names:
+        for cpe_name in self.cpe_names:
             plat = ET.SubElement(root, "platform")
             plat.set("idref", cpe_name)
 
@@ -1455,6 +1457,7 @@ class DirectoryLoader(object):
         self.all_values = set()
         self.all_rules = set()
         self.all_groups = set()
+        self.all_cpe_names = set()
 
         self.profiles_dir = profiles_dir
         self.bash_remediation_fns = bash_remediation_fns
@@ -1530,6 +1533,7 @@ class DirectoryLoader(object):
             self._process_values()
             self._recurse_into_subdirs()
             self._process_rules()
+            self.all_cpe_names.update(self.loaded_group.cpe_names)
 
     def process_directory_tree(self, start_dir, extra_group_dirs=None):
         self._collect_items_to_load(start_dir)
@@ -1545,6 +1549,7 @@ class DirectoryLoader(object):
             self.all_values.update(loader.all_values)
             self.all_rules.update(loader.all_rules)
             self.all_groups.update(loader.all_groups)
+            self.all_cpe_names.update(loader.all_cpe_names)
 
     def _get_new_loader(self):
         raise NotImplementedError()
@@ -1581,6 +1586,7 @@ class BuildLoader(DirectoryLoader):
             if "all" not in prodtypes and self.product not in prodtypes:
                 continue
             self.all_rules.add(rule)
+            self.all_cpe_names.update(rule.cpe_names)
             self.loaded_group.add_rule(rule, env_yaml=self.env_yaml)
 
             if self.loaded_group.platforms:

@@ -10,6 +10,8 @@ reference: https://www.cisecurity.org/benchmark/red_hat_linux/
 
 title: 'CIS Red Hat Enterprise Linux 8 Benchmark'
 
+platform: zypper
+
 description: |-
     This profile defines a baseline that aligns to the Center for Internet Security®
     Red Hat Enterprise Linux 8 Benchmark™, v1.0.0, released 09-30-2019.
