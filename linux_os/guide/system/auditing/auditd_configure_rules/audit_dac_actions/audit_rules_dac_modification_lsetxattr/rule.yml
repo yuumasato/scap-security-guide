@@ -85,3 +85,10 @@ template:
     vars:
         attr: lsetxattr
         check_root_user@rhel8: "true"
+        syscall_grouping:
+          - fremovexattr
+          - lremovexattr
+          - removexattr
+          - fsetxattr
+          - lsetxattr
+          - setxattr

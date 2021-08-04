@@ -92,3 +92,10 @@ template:
     vars:
         attr: fremovexattr
         check_root_user@rhel8: "true"
+        syscall_grouping:
+          - fremovexattr
+          - lremovexattr
+          - removexattr
+          - fsetxattr
+          - lsetxattr
+          - setxattr
