@@ -3,23 +3,129 @@
 # strategy = restrict
 # complexity = low
 # disruption = low
-#
-# What architecture are we on?
-#
-- name: Set architecture for audit tasks
-  set_fact:
-    audit_arch: "b{{ ansible_architecture | regex_replace('.*(\\d\\d$)','\\1') }}"
+- name: Ensure auditd Collects Information on Kernel Module Loading and Unloading
+  hosts: 'rhel84'
+  become: true
+  tags:
+    - CCE-80709-9
+    - CJIS-5.4.1.1
+    - NIST-800-171-3.1.7
+    - NIST-800-53-AC-6(9)
+    - NIST-800-53-AU-12(c)
+    - NIST-800-53-AU-2(d)
+    - NIST-800-53-CM-6(a)
+    - PCI-DSS-Req-10.2.7
+    - audit_rules_kernel_module_loading
+    - low_complexity
+    - low_disruption
+    - medium_severity
+    - reboot_required
+    - restrict_strategy
+  tasks:
 
-# set list of syscalls based on rhel version
-{{% set audit_syscalls = ["init_module", "delete_module", "finit_module"] %}}
+    - name: Set architecture for audit tasks
+      set_fact:
+        audit_arch: b{{ ansible_architecture | regex_replace('.*(\d\d$)','\1') }}
+      when: ansible_virtualization_type not in ["docker", "lxc", "openvz", "podman",
+        "container"]
 
-- name: Perform remediation of Audit rules for kernel module loading for x86 platform
-  block:
-    {{{ ansible_audit_augenrules_add_syscall_rule(arch="b32", syscalls=audit_syscalls, key="modules")|indent(4) }}}
-    {{{ ansible_audit_auditctl_add_syscall_rule(arch="b32", syscalls=audit_syscalls, key="modules")|indent(4) }}}
+    - name: Perform remediation of Audit rules for kernel module loading for x86 platform
+      block:
 
-- name: Perform remediation of Audit rules for kernel module loading for x86_64 platform
-  block:
-    {{{ ansible_audit_augenrules_add_syscall_rule(arch="b64", syscalls=audit_syscalls, key="modules")|indent(4) }}}
-    {{{ ansible_audit_auditctl_add_syscall_rule(arch="b64", syscalls=audit_syscalls, key="modules")|indent(4) }}}
-  when: audit_arch == "b64"
+        - name: Declare list of syscals
+          set_fact:
+            syscalls:
+              - init_module
+              - delete_module
+              - finit_module
+
+        - name: Declare number of syscalls
+          set_fact: audit_syscalls_number_of_syscalls="{{ syscalls|length|int }}"
+
+        - name: Check existence of syscalls for architecture b32 in /etc/audit/rules.d/
+          find:
+            paths: /etc/audit/rules.d
+            contains: ^[\s]*-a[\s]+always,exit[\s]+(?:.*-F[\s]+arch=b32[\s]+)(?:.*(-S[\s]+{{
+              item }}[\s]+|([\s]+|[,]){{ item }}([\s]+|[,]))).*(-k[\s]+|-F[\s]+key=)[\S]+[\s]*$
+            patterns: '*.rules'
+          register: audit_syscalls_found_b32_rules_d
+          loop: '{{ syscalls }}'
+
+        - name: Get number of matched syscalls for architecture b32 in /etc/audit/rules.d/
+          set_fact: audit_syscalls_matched_b32_rules_d="{{ audit_syscalls_found_b32_rules_d.results|sum(attribute='matched')|int
+            }}"
+
+        - debug:
+            msg: '{{ audit_syscalls_found_b32_rules_d }}'
+
+        - name: Declare found syscalls
+          set_fact: audit_found_syscalls_b32="{{ audit_syscalls_found_b32_rules_d.results|selectattr('matched')|map(attribute='item')|list }}"
+
+        - name: Declare missing syscalls
+          set_fact: audit_missing_syscalls_b32="{{ syscalls|difference(audit_found_syscalls_b32) }}"
+
+        - name: Gather paths
+          set_fact: the_file="{{ audit_syscalls_found_b32_rules_d.results|map(attribute='files')|flatten|map(attribute='path')|list | unique}}"
+
+        - name: Search /etc/audit/rules.d for other rules with the key modules
+          find:
+            paths: /etc/audit/rules.d
+            contains: ^.*(?:-F key=|-k\s+)modules$
+            patterns: '*.rules'
+          register: find_syscalls_files
+
+        - name: Use /etc/audit/rules.d/modules.rules as the recipient for the rule
+          set_fact:
+            all_files:
+              - /etc/audit/rules.d/modules.rules
+          when: find_syscalls_files.matched is defined and find_syscalls_files.matched
+            == 0
+
+        - name: Use matched file as the recipient for the rule
+          set_fact:
+            all_files:
+              - '{{ find_syscalls_files.files | map(attribute=''path'') | list | first
+                }}'
+          when: find_syscalls_files.matched is defined and find_syscalls_files.matched
+            > 0
+
+        - name: Insert the line in WYS
+          lineinfile:
+            path: '{{ the_file }}'
+            regexp: "-a always,exit -F arch=b32 -S {{ audit_found_syscalls_b32|join(' -S ') }} -k modules"
+            line: "-a always,exit -F arch=b32 -S {{ syscalls|join(' -S ') }} -k modules"
+            backrefs: yes
+            create: true
+            state: present
+
+        - name: Insert arrox in the line
+          lineinfile:
+            path: '{{ the_file }}'
+            regexp: '^(arroz ).*'
+            line: '\1feijão'
+            backrefs: yes
+            state: present
+
+        - name: Insert the syscall rule in {{ all_files[0] }}
+          block:
+
+            - name: 'Construct rule: add rule list, action and arch'
+              set_fact: tmpline="-a always,exit -F arch=b32"
+
+            - name: 'Construct rule: add syscalls'
+              set_fact: tmpline="{{ tmpline + ' -S ' + item.item }}"
+              loop: '{{ audit_syscalls_found_b32_rules_d.results }}'
+              when: item.matched is defined and item.matched == 0
+
+            - name: 'Construct rule: add fields and key'
+              set_fact: tmpline="{{ tmpline + ' -k modules' }}"
+
+            - name: Insert the line in {{ all_files[0] }}
+              lineinfile:
+                path: '{{ all_files[0] }}'
+                line: '{{ tmpline }}'
+                create: true
+                state: present
+          when: False
+            #when: audit_syscalls_matched_b32_rules_d < audit_syscalls_number_of_syscalls
+
