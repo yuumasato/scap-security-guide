@@ -85,26 +85,36 @@ def main():
     objects.clear()
     [objects.append(cpe_object) for cpe_object in cpe_objects]
 
-    # if any subelements in an object contain var_ref, return it here
-    local_var_ref = ssg.build_cpe.extract_subelement(objects, 'var_ref')
-
     variables = ovaltree.find("./{%s}variables" % oval_ns)
     if variables is not None:
-        cpe_variables = ssg.build_cpe.extract_referred_nodes(tests, variables, "var_ref")
-        local_variables = ssg.build_cpe.extract_referred_nodes(variables, variables, "id")
-        if cpe_variables:
+        referenced_variables = ssg.build_cpe.extract_referred_nodes(objects, variables, "var_ref")
+        referenced_variable_elems = { cpe_variable for cpe_variable in referenced_variables }
+        referenced_variable_ids = { cpe_variable.get('id') for cpe_variable in referenced_variables }
+
+        referenced_variables = ssg.build_cpe.extract_referred_nodes(states, variables, "var_ref")
+        referenced_variable_elems.update({ cpe_variable for cpe_variable in referenced_variables })
+        referenced_variable_ids.update({ cpe_variable.get('id') for cpe_variable in referenced_variables })
+
+        if len(referenced_variable_elems):
             variables.clear()
-            [variables.append(cpe_variable) for cpe_variable in cpe_variables]
-        elif local_var_ref:
-            for local_var in local_variables:
-                if local_var.get('id') == local_var_ref:
-                    variables.clear()
-                    variables.append(local_var)
-                    env_obj = ssg.build_cpe.extract_env_obj(env_objects, local_var)
-                    # env_obj will return no objects if the local variable doesn't
-                    # reference any object via object_ref
-                    if env_obj:
-                        objects.append(env_obj)
+            for var in referenced_variable_elems:
+                has_external_vars = False
+                if (var.tag == "{%s}external_variable" % oval_ns):
+                    error_msg = "Error: A CPE OVAL check cannot reference an external_variable: %s\n" % var.get('id')
+                    sys.stderr.write(error_msg)
+                    has_external_vars = True
+
+                variables.append(var)
+
+                # Make sure to inlue object referenced by a local_variable
+                env_obj = ssg.build_cpe.extract_env_obj(env_objects, var)
+                # env_obj will return no objects if the local variable doesn't
+                # reference any object via object_ref
+                if env_obj:
+                    objects.append(env_obj)
+
+            if has_external_vars:
+                sys.exit(1)
         else:
             ovaltree.remove(variables)
 
