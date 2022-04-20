@@ -2433,7 +2433,7 @@ log size, although some activity would not be logged.
 <tr>
   <td>CM-7(a)<br/>CM-7(b)<br/>SC-5(1)<br/>SC-5(2)<br/>SC-5(3)(a)<br/>CM-6(a)</td>
   <td>CCE-82492-0</td>
-  <td>Enable Kernel Parameter to Use TCP Syncookies on IPv4 Interfaces</td>
+  <td>Enable Kernel Parameter to Use TCP Syncookies on Network Interfaces</td>
   <td xml:lang="en-US">
 To set the runtime status of the <code>net.ipv4.tcp_syncookies</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.tcp_syncookies=1</pre>
 To make sure that the setting is persistent, add the following line to a file in the directory <tt>/etc/sysctl.d</tt>: <pre>net.ipv4.tcp_syncookies = 1</pre>
@@ -2851,7 +2851,7 @@ Kerberos is supported by crypto policy, but it's configuration may be
 set up to ignore it.
 To check that Crypto Policies settings for Kerberos are configured correctly, examine that there is a symlink at
 /etc/krb5.conf.d/crypto-policies targeting /etc/cypto-policies/back-ends/krb5.config.
-If the symlink exists, kerberos is configured to use the system-wide crypto policy settings.
+If the symlink exists, Kerberos is configured to use the system-wide crypto policy settings.
   </td>
   <td xml:lang="en-US">
 Overriding the system crypto policy makes the behavior of Kerberos violate expectations,
@@ -3123,11 +3123,11 @@ To set the runtime status of the <code>kernel.kptr_restrict</code> kernel parame
 To make sure that the setting is persistent, add the following line to a file in the directory <tt>/etc/sysctl.d</tt>: <pre>kernel.kptr_restrict = <tt>1</tt></pre>
   </td>
   <td xml:lang="en-US">
-Exposing kernel pointers (through procfs or <tt>seq_printf()</tt>) exposes
-kernel writeable structures that can contain functions pointers. If a write vulnereability occurs
-in the kernel allowing a write access to any of this structure, the kernel can be compromise. This
-option disallow any program withtout the CAP_SYSLOG capability from getting the kernel pointers addresses,
-replacing them with 0.
+Exposing kernel pointers (through procfs or <tt>seq_printf()</tt>) exposes kernel
+writeable structures which may contain functions pointers. If a write vulnerability
+occurs in the kernel, allowing write access to any of this structure, the kernel can
+be compromised. This option disallow any program without the CAP_SYSLOG capability
+to get the addresses of kernel pointers by replacing them with 0.
   </td>
   <td>sysctl_kernel_kptr_restrict_value=1</td>
 </tr>

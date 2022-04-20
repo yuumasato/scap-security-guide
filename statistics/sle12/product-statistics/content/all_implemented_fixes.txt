@@ -134,6 +134,7 @@ auditd_name_format
 auditd_write_logs
 banner_etc_gdm_banner
 banner_etc_issue
+banner_etc_motd
 chronyd_or_ntpd_set_maxpoll
 chronyd_or_ntpd_specify_multiple_servers
 chronyd_run_as_chrony_user
@@ -437,6 +438,7 @@ sudo_remove_no_authenticate
 sudo_remove_nopasswd
 sudo_require_authentication
 sudo_require_reauthentication
+sudoers_default_includedir
 sudoers_validate_passwd
 sysctl_fs_protected_hardlinks
 sysctl_fs_protected_symlinks
