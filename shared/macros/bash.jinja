@@ -1717,15 +1717,15 @@ fi
   If the package is installed, the Bash remediation will be applied.
   The macro respects `platform_package_overrides` variable.
 #}}
-{{%- macro bash_pkg_conditional(package) -%}}
+{{%- macro bash_pkg_conditional(package, not_installed=false) -%}}
 {{%- if package in platform_package_overrides -%}}
   {{%- set package = platform_package_overrides[package] -%}}
 {{%- endif -%}}
   {{% if pkg_system is defined %}}
     {{%- if pkg_system == "rpm" -%}}
-        {{{ bash_pkg_conditional_rpm(package) }}}
+        {{{ "! " if not_installed }}}{{{ bash_pkg_conditional_rpm(package) }}}
     {{%- elif pkg_system == "dpkg" -%}}
-        {{{ bash_pkg_conditional_dpkg(package) }}}
+        {{{ "! " if not_installed }}}{{{ bash_pkg_conditional_dpkg(package) }}}
     {{%- else -%}}
 JINJA MACRO ERROR - Unknown package system '{{{ pkg_system }}}'.
     {{%- endif -%}}

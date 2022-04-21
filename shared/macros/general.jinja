@@ -955,7 +955,7 @@ Operator see
 #}}
 {{% macro rule_notapplicable_when_ovirt_installed() %}}
 {{%- if product == "rhel8" %}}
-- no_ovirt
+- no_ovirt-engine or no_ovirt-host
 {{%- endif %}}
 {{% endmacro %}}
 

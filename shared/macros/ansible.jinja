@@ -685,11 +685,11 @@ The following macro remediates Audit syscall rule in :code:`/etc/audit/audit.rul
   If the package passed as a parameter is installed, the task is applicable.
   The macro respects `platform_package_overrides` variable.
 #}}
-{{%- macro ansible_pkg_conditional(package) -%}}
+{{%- macro ansible_pkg_conditional(package, not_installed=false) -%}}
 {{%- if package in platform_package_overrides -%}}
   {{%- set package = platform_package_overrides[package] -%}}
 {{%- endif -%}}
-'"{{{ package }}}" in ansible_facts.packages'
+'"{{{ package }}}" {{{ "not " if not_installed }}}in ansible_facts.packages'
 {{%- endmacro -%}}
 
 {{#

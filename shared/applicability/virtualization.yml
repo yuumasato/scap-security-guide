@@ -13,12 +13,30 @@ cpes:
       bash_conditional: '[ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]'
       ansible_conditional: 'ansible_virtualization_type not in ["docker", "lxc", "openvz", "podman", "container"]'
 
-  - no_ovirt:
-      name: "cpe:/a:no_ovirt"
-      title: "oVirt is not installed (no Host nor Manager)"
-      check_id: installed_env_has_no_ovirt
+  - no_ovirt-engine:
+      name: "cpe:/a:no_ovirt-engine"
+      title: "oVirt Manager is not installed"
+      check_id: installed_env_has_no_ovirt-engine
+      bash_conditional: {{{ bash_pkg_conditional("ovirt-engine", not_installed=true) }}}
+      ansible_conditional: {{{ ansible_pkg_conditional("ovirt-engine", not_installed=true) }}}
 
-  - ovirt:
-      name: "cpe:/a:ovirt"
-      title: "oVirt is installed (Host or Manager)"
-      check_id: installed_env_has_ovirt
+  - ovirt-engine:
+      name: "cpe:/a:ovirt-engine"
+      title: "oVirt Manager is installed"
+      check_id: installed_env_has_ovirt-engine
+      bash_conditional: {{{ bash_pkg_conditional("ovirt-engine") }}}
+      ansible_conditional: {{{ ansible_pkg_conditional("ovirt-engine") }}}
+
+  - no_ovirt-host:
+      name: "cpe:/a:no_ovirt-host"
+      title: "oVirt Host is not installed"
+      check_id: installed_env_has_no_ovirt-host
+      bash_conditional: {{{ bash_pkg_conditional("ovirt-host", not_installed=true) }}}
+      ansible_conditional: {{{ ansible_pkg_conditional("ovirt-host", not_installed=true) }}}
+
+  - ovirt-host:
+      name: "cpe:/a:ovirt-host"
+      title: "oVirt Host is installed"
+      check_id: installed_env_has_ovirt-host
+      bash_conditional: {{{ bash_pkg_conditional("ovirt-host") }}}
+      ansible_conditional: {{{ ansible_pkg_conditional("ovirt-host") }}}
