@@ -1,0 +1,17 @@
+upstream_project_url: https://github.com/ComplianceAsCode/content/
+upstream_ref: v0.1.63
+downstream_package_name: scap-security-guide
+specfile_path: .distro/scap-security-guide.spec
+patch_generation_ignore_paths:
+  - .distro/
+patch_generation_patch_id_digits: 1
+sync_changelog: true
+files_to_sync:
+  - src: .distro/
+    dest: .
+    delete: true
+    filters:
+      - "protect .git*"
+      - "protect sources"
+      - "exclude source-git.yaml"
+      - "exclude .gitignore"
