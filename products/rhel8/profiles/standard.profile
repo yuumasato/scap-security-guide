@@ -1,4 +1,4 @@
-documentation_complete: true
+documentation_complete: false
 
 title: 'Standard System Security Profile for Red Hat Enterprise Linux 8'
 
