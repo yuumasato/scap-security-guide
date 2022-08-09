@@ -99,6 +99,7 @@ cp -r %{_builddir}/%{_static_rhel6_content}/guides %{buildroot}%{_docdir}/%{name
 %changelog
 * Mon Aug 08 2022 Watson Sato <wsato@redhat.com> - 0.1.63-1
 - Update to the latest upstream release (RHBZ#2116348)
+- Update RHEL8 STIG profile to V1R7 (RHBZ#2116409)
 
 * Thu May 19 2022 Watson Sato <wsato@redhat.com> - 0.1.57-10
 - Fix Ansible sysctl loop variable path (RHBZ#2082557)
