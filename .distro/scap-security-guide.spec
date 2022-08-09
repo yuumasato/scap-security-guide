@@ -122,6 +122,7 @@ cp -r %{_builddir}/%{_static_rhel6_content}/guides %{buildroot}%{_docdir}/%{name
 %changelog
 * Mon Aug 08 2022 Watson Sato <wsato@redhat.com> - 0.1.63-1
 - Update to the latest upstream release (RHBZ#2116347)
+- Update RHEL8 STIG profile to V1R7 (RHBZ#2116408)
 
 * Tue May 17 2022 Watson Sato <wsato@redhat.com> - 0.1.60-9
 - Fix validation of OVAL 5.10 content (RHBZ#2082556)
