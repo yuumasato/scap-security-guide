@@ -102,6 +102,7 @@ cp -r %{_builddir}/%{_static_rhel6_content}/guides %{buildroot}%{_docdir}/%{name
 - Update RHEL8 STIG profile to V1R7 (RHBZ#2116409)
 - Select grub2_disable_recovery in OSPP Profile (RHBZ#2117309)
 - Use authselect minimal profile in OSPP Profile (RHBZ#2117307)
+- Improve rules for CIS level1 partition options (RHBZ#2117511)
 
 * Thu May 19 2022 Watson Sato <wsato@redhat.com> - 0.1.57-10
 - Fix Ansible sysctl loop variable path (RHBZ#2082557)
