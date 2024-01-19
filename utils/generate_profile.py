@@ -83,7 +83,30 @@ class XLSXParser(Parser):
         self.file_format = ".xlsx"
 
     def parse(self) -> pycompliance.Benchmark:
-        cols = [
+
+        COL_SECTION = 0
+        COL_CONTROL = 1
+        COL_LEVEL = 2
+        COL_TITLE = 3
+        COL_ASSESSMENT = 4
+        COL_DESCRIPTION = 5
+        COL_RATIONALE = 6
+        COL_REMEDIATION = 7
+        COL_AUDIT = 8
+
+        # Enumerate the columns to be read following the definitions above
+        # The Column names and their orders can change from release to release
+        cols_1_5 = [
+            'Section #',
+            'Recommendation #',
+            'Profile',
+            'Title',
+            'Assessment Status',
+            'Description',
+            'Rationale Statement',
+            'Remediation Procedure',
+            'Audit Procedure']
+        cols_1_4 = [
             'section #',
             'recommendation #',
             'profile',
@@ -98,23 +121,28 @@ class XLSXParser(Parser):
         benchmark_version = self.get_version()
         b = pycompliance.Benchmark(benchmark_name)
         b.version = benchmark_version
-        df = pandas.read_excel(
-            self.input_file, sheet_name='Combined Profiles', usecols=cols)
+        try:
+            df = pandas.read_excel(
+                self.input_file, sheet_name='Combined Profiles', usecols=cols_1_5)
+        except ValueError:
+            df = pandas.read_excel(
+                self.input_file, sheet_name='Combined Profiles', usecols=cols_1_4)
+
         result = df.to_json(orient='split')
         d = json.loads(result)
 
         for i in d['data']:
-            section = str(i[0])
+            section = str(i[COL_SECTION])
             if section.endswith('.0'):
                 section = section.rstrip('.0')
-            control = i[1]
-            level = i[2]
-            title = i[3]
-            assessment = i[4]
-            description = i[5]
-            rationale = i[6]
-            remediation = i[7]
-            audit = i[8]
+            control = i[COL_CONTROL]
+            level = i[COL_LEVEL]
+            title = i[COL_TITLE]
+            assessment = i[COL_ASSESSMENT]
+            description = i[COL_DESCRIPTION]
+            rationale = i[COL_RATIONALE]
+            remediation = i[COL_REMEDIATION]
+            audit = i[COL_AUDIT]
             if section and not control:
                 s = pycompliance.Section(section)
                 s.title = title
