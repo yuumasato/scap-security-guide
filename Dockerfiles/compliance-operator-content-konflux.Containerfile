@@ -105,7 +105,7 @@ LABEL \
         io.openshift.maintainer.product="OpenShift Container Platform" \
         io.openshift.maintainer.component="Compliance Operator"
         # Implement this using Konflux dynamic labels
-        # version=1.6.1-dev
+        version=1.9.0
 
 WORKDIR /
 COPY --from=builder /go/src/github.com/ComplianceAsCode/content/LICENSE /licenses/LICENSE
